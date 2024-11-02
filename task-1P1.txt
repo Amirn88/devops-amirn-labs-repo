@@ -1,0 +1,157 @@
+Hello with Python -Nginx 
+--------------------------------------------
+1-Install Nginx 
+2-Install Python
+3-Install Route Nginx’s Default Directory to Python Flask App
+
+
+sudo apt install nginx python3 python3-pip -y
+pip3 install flask
+
+
+mkdir ~/hello_app
+cd ~/hello_app
+
+sudo vi app.py
+
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return "Hello, DevOps Team with Python!"
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=8000)
+-----------------------------------------------------------------
+Test Hello app run via :
+open new ssh terminal : curl http://127.0.0.1:8000
+
+ Hello, DevOps Team with Python
+-----------------------------------------------------------
+
+sudo vi /etc/nginx/sites-available/hello_app
+
+
+WorkingDirectory=/home/amirn/hello_app
+
+
+[Unit]
+Description=Flask Hello App
+After=network.target
+
+[Service]
+User=amirn
+WorkingDirectory=/home/amirn/hello_app
+ExecStart=/usr/bin/python3 /home/amirn/hello_app/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+after that all step's not fixed via HTTP :-
+
+I checked all directory and files until doing changes default
+
+
+
+#sudo vi /etc/nginx/sites-available/default
+
+edit into default
+
+server {
+    listen 80;
+    server_name localhost;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+
+
+
+
+------------------------------------------------------------------------------
+history :
+ sudo apt update
+   45  sudo apt install nginx -y
+   46  sudo systemctl start nginx
+   47  sudo systemctl enable nginx
+   48  sudo apt install python3 python3-pip -y
+   49  ls
+   50  mkdir shell-files-doker-k8s
+   51  mv Install_docker.sh Install_MiniKube.sh /home/amirn/shell-files-doker-k8s/
+   52  ls
+   53  pip3 install flask
+   54  mkdir ~/hello_app
+   55  cd ~/hello_app
+   56  app.py
+   57  sudo vi app.py
+   58  python3 app.py
+   59  sudo vi app.py
+   60  sudo apt install net-tools
+   61  netstat
+   62  lntp
+   63  ls
+   64  sudo vi  app.py
+   65  python3 app.py
+   66  sudo vi /etc/nginx/sites-available/hello_app
+   67  sudo ln -s /etc/nginx/sites-available/hello_app /etc/nginx/sites-enabled
+   68  sudo nginx -t  # Test configuration
+   69  sudo systemctl restart nginx
+   70  sudo systemctl status hello_app
+   71  sudo vi /etc/systemd/system/hello_app.service
+   72  sudo systemctl status hello_app
+   73  sudo systemctl daemon-reload
+   74  sudo systemctl restart hello_app.service
+   75  sudo systemctl status hello_app
+   76  sudo systemctl enable hello_app
+   77  sudo systemctl restart nginx
+   78  sudo ln -s /etc/nginx/sites-available/hello_app /etc/nginx/sites-enabled/
+   79  sudo ln -s /etc/nginx/sites-available/hello_app /etc/nginx/sites-enabled/default app.py
+   80  sudo ln -s /etc/nginx/sites-available/hello_app /etc/nginx/sites-enabled/default
+   81  sudo ln -s /etc/nginx/sites-available/hello_app /etc/nginx/sites-enabled
+   82  sudo nginx -t  
+   83  sudo systemctl restart nginx
+   84  http://localhost/
+   85  firefox
+   86  http://localhost/
+   87  sudo systemctl status hello_app
+   88  cat  /etc/nginx/nginx.conf
+   89  cat  /etc/nginx/sites-enabled/default
+   90  cat  /etc/nginx/sites-available/
+   91  cat  /etc/nginx/sites-available/default
+   92  cat  /etc/nginx/sites-available/hello_app
+   93  cat  /etc/nginx/sites-available/default
+   94  cat  /etc/nginx/sites-enabled/default
+   95  cat  /etc/nginx/sites-enabled/hello_app
+   96  cat /etc/hosts
+   97  sudo vi /etc/hosts
+   98  cat  /etc/nginx/nginx.conf app.py
+   99  cat  /etc/nginx/nginx.conf
+  100  cat  /etc/nginx/nginx.conf
+  101  sudo vi /etc/nginx/sites-available/default
+  102  systemctl stop nginx.service
+  103  sudosystemctl stop nginx.service
+  104  sudo systemctl stop nginx.service
+  105  sudo vi /etc/nginx/sites-available/default
+  106  sudo nginx -t
+  107  sudo systemctl restart nginx
+  108  sudo vi /etc/nginx/sites-available/default
+  109  sudo nano /etc/nginx/sites-available/default
+  110  sudo vi /etc/nginx/sites-available/default
+  111* sudo
+  112  sudo systemctl restart nginx
+  113  sudo systemctl enable hello_app
+
+
+
+
