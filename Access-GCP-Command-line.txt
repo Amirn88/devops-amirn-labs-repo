@@ -2,8 +2,8 @@ For Access SSH to cluster Console :-
 -------------------------------------
 
 gcloud auth login
-gcloud config set project dashboard-253713
-gcloud container clusters get-credentials elastic-stack --zone europe-west2-a
+gcloud config set project "project-Name"
+gcloud container clusters get-credentials "cluster name --zone regone area name"
 kubectl config current-context
 kubectl get nodes
 gcloud components update kubectl
