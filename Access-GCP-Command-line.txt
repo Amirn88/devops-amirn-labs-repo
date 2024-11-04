@@ -1,4 +1,4 @@
-For access SSH to cluster Console :-
+For Access SSH to cluster Console :-
 -------------------------------------
 
 gcloud auth login
