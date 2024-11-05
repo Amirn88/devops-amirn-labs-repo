@@ -1,0 +1,154 @@
+mkdir -p /var/lib/backup
+
+
+
+
+#Clusters1:
+
+#k8s and ok8s and mk8s and backup cluster >> cluster1
+
+k config use-context cluster1
+k create namespace app-team1
+k create deployment busy --image busybox -- sleep 10000
+k create deployment front-end --image=nginx --replicas 2
+k create deployment presentation --image=nginx --replicas 2
+k create deployment from-previous-etcd --image nginx --replicas 4
+k run foo --image=busybox -- /bin/sh -c "while true; do echo 'error in application'; echo 'application works!!'; sleep 1; done"
+k label nodes cluster1-node02 disk=ssd
+mkdir /opt/KUSC00402/
+touch /opt/KUSC00402/kusc00402.txt
+mkdir /opt/KUTR00101
+touch /opt/KUTR00101/foo
+mkdir /opt/KUTR00401
+touch /opt/KUTR00401/KUTR00401.txt
+k create namespace ing-internal
+kubectl run hello-app --image=nginx --port=5678 --labels="app=hello-app" --namespace=ing-internal
+kubectl expose pod hello-app --type=ClusterIP --name=hello --port=5678 --target-port=5678 --namespace=ing-internal
+
+
+
+cat <<EOF > pv_sidecar.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: log-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /mnt/data/logs
+EOF
+
+k create -f pv_sidecar.yaml
+
+cat <<EOF > pvc_sidecar.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: log-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: log-pv
+EOF
+
+k create -f pvc_sidecar.yaml
+
+cat <<EOF > pod_sidecar.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: big-corp-app
+spec:
+  volumes:
+    - name: log-volume
+      persistentVolumeClaim:
+        claimName: log-pvc
+  containers:
+    - name: main-container
+      image: busybox
+      volumeMounts:
+        - mountPath: /var/log
+          name: log-volume
+      command:
+        - "sh"
+        - "-c"
+        - >
+          while true; do
+            echo 'error in application' >> /var/log/big-corp-app.log;
+            sleep 1;
+          done
+EOF
+ 
+k create -f pod_sidecar.yaml
+
+cat <<EOF > pv-volume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-volume
+spec:
+  capacity:
+    storage: 70Mi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: csi-hostpath-sc
+  hostPath:
+    path: /mnt/data
+EOF
+
+k create -f pv-volume.yaml
+
+k label pods big-corp-app name=overloaded-cpu
+k label pods foo name=overloaded-cpu
+k label pods busy-* name=overloaded-cpu
+k config use-context cluster1
+ssh cluster1-controlplane 'mkdir -p /var/lib/backup/ && sudo apt-get install etcd-client -y && ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key  snapshot save /var/lib/backup/etcd-snapshot-previous.db'
+
+######################################################################
+########################### COPY AGAIN!!! ############################
+######################################################################
+
+#Clusters1:
+
+#k8s and ok8s and mk8s and backup cluster >> cluster1
+k config use-context cluster1
+k delete deployment from-previous-etcd
+
+#Clusters2:
+
+#hk8s and ek8s  >> cluster2
+k config use-context cluster2
+k create namespace fubar
+k create namespace internal
+k -n fubar create deployment web --image=nginx --port 9000
+k -n fubar create deployment non-web --image=nginx
+kubectl -n fubar expose deployment web --port 9000 --target-port 9000
+
+
+k -n internal create deployment test-from-internal --image=busybox -- sleep 10000
+
+#Clusters3:
+
+#ek8s  >> cluster3
+k config use-context cluster3
+k create deployment drain-pod --image busybox -- sleep 10000
+
+#Clusters4:
+
+#wk8s >> cluster4
+
+k config use-context cluster4
+ssh cluster4-node01 'systemctl stop kubelet.service && systemctl disable kubelet.service'
+
+
+#k8s and ok8s and mk8s and backup cluster >> cluster1
+#hk8s >> cluster2
+#ek8s >> cluster3
+#wk8s >> cluster4
+

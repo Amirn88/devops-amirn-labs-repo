@@ -1,0 +1,58 @@
+K8S upgrade  steps :-
+----------------------------
+
+step1:
+ssh (node name)
+sudo -i
+
+Step 2:
+drin node and check after 
+cordone node 
+
+kubectl drain <node-to-drain> --ignore-daemonsets
+kubectl cordone (node name )
+
+
+step 3:
+sudo apt update
+sudo apt-cache madison kubeadm
+
+#step 4-start now to upgred:
+--------------------------
+
+sudo apt-get update && sudo apt-get install -y kubeadm='1.31.x-*'
+
+kubeadm version
+
+sudo kubeadm upgrade plan
+
+sudo kubeadm upgrade apply v1.31.x
+
+----------------------------------------------
+
+Step-5 node components on the master node
+
+Upgrade kubelet and kubectl 
+
+sudo apt-get update && sudo apt-get install -y kubelet='1.31.x-*' kubectl='1.31.x-*'
+
+
+-------------------------------------------------
+step 6
+
+un-drin node and check after 
+un-cordone node 
+
+#kubectl uncordon <node-to-uncordon>
+
+---------------------------------------
+step 7 Restart the kubelet:
+
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+----------------------------------
+exit from SSH node name and check verions vis 
+#kubectl get nodes
+------------------------------------------------------- --
+

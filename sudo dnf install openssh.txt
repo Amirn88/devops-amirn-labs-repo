@@ -1,0 +1,37 @@
+sudo dnf install openssh-server
+sudo systemctl start sshd
+sudo systemctl enable sshd
+sudo systemctl status sshd
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --reload
+sudo systemctl restart sshd
+
+
+
+sudo nmtui
+
+ip a
+
+sudo nano /etc/sysconfig/network-scripts/ifcfg-ens33
+
+
+DEVICE=ens33  # or your interface name
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=192.168.1.100  # Your static IP address
+PREFIX=24  # Subnet mask (e.g., 255.255.255.0 is /24)
+GATEWAY=192.168.1.1  # Your gateway address
+DNS1=8.8.8.8  # Your preferred DNS server
+
+sudo systemctl restart NetworkManager
+
+ip a
+
+sudo nmcli con modify ens33 ipv4.addresses 192.168.1.100/24
+sudo nmcli con modify ens33 ipv4.gateway 192.168.1.1
+sudo nmcli con modify ens33 ipv4.dns "8.8.8.8"
+sudo nmcli con modify ens33 ipv4.method manual
+
+
+sudo nmcli con up ens33
+

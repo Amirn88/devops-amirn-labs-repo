@@ -1,0 +1,15 @@
+apiVersion: 
+kind:
+metadata:
+    name: httpd
+    labels:
+      app: webapp
+      ver: "2.4"
+    namespace: dev  
+spec:
+  containers:
+    - name: httpd-container
+      image: httpd
+      port: 8080
+    
+    
