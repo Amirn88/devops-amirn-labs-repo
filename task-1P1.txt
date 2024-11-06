@@ -1,5 +1,10 @@
 Hello with Python -Nginx 
---------------------------------------------
+------------------------------------------------
+#Task
+Install latest nginx stable.
+Serve a bash script on route /bash that outputs the word "hello"
+Run a python script on route /py that outpus the word "hello"
+----------------------------------------------
 1-Install Nginx 
 2-Install Python
 3-Install Route Nginx’s Default Directory to Python Flask App
