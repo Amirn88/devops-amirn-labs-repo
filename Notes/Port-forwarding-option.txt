@@ -1,6 +1,14 @@
 When need to publish container auto port at Clude-Clusterused it :-
+--VERY import not when call -P only that readmize changed every timme conativer restart
+
 
 docker container run -d --name webapp -P httpd
+
+best option :-
+set port number static like that 
+
+docker container run -d --name webapp -P 8070:80 httpd
+
 
 That P captal auto randmize port number for published IP Port.
 -------------------------------------------------------------
