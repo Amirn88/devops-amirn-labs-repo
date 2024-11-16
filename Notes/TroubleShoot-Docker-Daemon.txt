@@ -13,3 +13,15 @@ clean container : images and container
 --------------------------
 #docker container prune
 #docker image prune
+
+VIP:enable " Debug Mode: false"            set True must importance tshoo :
+#docker system info
+
+ Debug Mode: false
+#vim /etc/docker/daemon.json
+
+------------------------------------------------------------------------
+
+
+
+
