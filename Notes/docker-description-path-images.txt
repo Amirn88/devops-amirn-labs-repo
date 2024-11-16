@@ -1,0 +1,27 @@
+#to show iamges and buld location into filesystem where:-
+---------------------------------------------------------
+
+#ls /var/lib/docker/
+
+
+#ls -lrt /var/lib/docker
+
+examble:-
+--------------
+amirn@manager:~$ sudo ls /var/lib/docker/
+buildkit  containers  engine-id  image  network  overlay2  plugins  runtimes  swarm  tmp  volumes
+amirn@manager:~$ sudo ls -ltr /var/lib/docker
+total 52
+drwx------   4 root root  4096 Aug  3 18:35 plugins
+-rw-------   1 root root    36 Aug  3 18:35 engine-id
+drwx------   3 root root  4096 Aug  3 18:35 image
+drwxr-x---   3 root root  4096 Aug  3 18:35 network
+drwx------   2 root root  4096 Aug  3 18:35 swarm
+drwx--x--x   5 root root  4096 Nov  9 17:10 buildkit
+drwx------   2 root root  4096 Nov 16 15:08 runtimes
+drwx-----x   4 root root  4096 Nov 16 15:08 volumes
+drwx------   2 root root  4096 Nov 16 15:20 tmp
+drwx--x--- 136 root root 12288 Nov 16 15:20 overlay2
+drwx--x---   7 root root  4096 Nov 16 15:20 containers
+amirn@manager:~$
+
