@@ -1,0 +1,4 @@
+systemctl is-enable docker
+systemctl status docker
+
+
