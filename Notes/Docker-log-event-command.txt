@@ -1,0 +1,8 @@
+for get logs from docker container:-
+#docker container logs "conatiner name " -f    -f for live logs
+  
+#$%To get system Events to debugs and logs:-
+
+
+#docker system events --since 10h    set m or houers 
+
