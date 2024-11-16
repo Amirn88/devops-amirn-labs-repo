@@ -25,3 +25,24 @@ drwx--x--- 136 root root 12288 Nov 16 15:20 overlay2
 drwx--x---   7 root root  4096 Nov 16 15:20 containers
 amirn@manager:~$
 
+Notes:We can inspect more Containers unttil Containers ID internially:-
+
+amirn@manager:~$ sudo ls -ltr /var/lib/docker/containers/
+total 20
+drwx--x--- 4 root root 4096 Nov 16 15:08 dc04c5c86765e9c9d34c1afc5f295c9109e87dc44b1a8229947004a5c1d9bfdb
+drwx--x--- 4 root root 4096 Nov 16 15:08 34c6aa4e59f5dac123c952e37159fc56f6a0921c11949b89d9b139930615575a
+drwx--x--- 4 root root 4096 Nov 16 15:08 1f7e6791fc1f64d1b4b7123c79aed8ac8bb379406a627cbb8df34c4e06c91fd4
+drwx--x--- 4 root root 4096 Nov 16 15:22 7b46909f8ac08ae2756f506e37e878542b212b91440ecd313dd7dc314f478495
+drwx--x--- 4 root root 4096 Nov 16 15:23 10ea78da481f271b001b7d583a703cc18e9f536448111014ff11cbd212922ff1
+amirn@manager:~$ sudo ls -ltr /var/lib/docker/containers/dc04c5c86765e9c9d34c1afc5f295c9109e87dc44b1a8229947004a5c1d9bfdb
+total 32
+drwx------ 2 root root 4096 Nov 14 18:30 checkpoints
+-rw-r--r-- 1 root root   71 Nov 14 18:30 resolv.conf.hash
+-rw-r--r-- 1 root root  261 Nov 14 18:30 resolv.conf
+drwx--x--- 2 root root 4096 Nov 14 18:30 mounts
+-rw-r--r-- 1 root root   13 Nov 14 18:30 hostname
+-rw-r----- 1 root root    0 Nov 14 18:30 dc04c5c86765e9c9d34c1afc5f295c9109e87dc44b1a8229947004a5c1d9bfdb-json.log
+-rw-r--r-- 1 root root  174 Nov 14 18:30 hosts
+-rw------- 1 root root 1503 Nov 16 15:08 hostconfig.json
+-rw------- 1 root root 2656 Nov 16 15:08 config.v2.json
+
