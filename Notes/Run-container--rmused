@@ -1,0 +1,35 @@
+Note The "--rm" option is often used in the CI/CD Pipelines to clear cach after run but when stop stop  Container removed :
+
+docker container run -d --name web-app --rm -p 8080:80 nginx
+
+very importan notes add hostname to container for uniclay name like 
+
+
+
+Example:-
+-----------------------------------------------------------------------
+amirn@manager:~/DokerFiles$ docker container run -d --name web-app -p 8989:80 --rm nginx:latest
+c322a85271efe807247ebdc41dbc7d796503d997dc221c1d82df062fed45e838
+amirn@manager:~/DokerFiles$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+c322a85271ef   nginx:latest      "/docker-entrypoint.…"   6 seconds ago   Uamirn@manager:~/DokerFiles$ docker stop web-app
+amirn@manager:~/DokerFiles$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED       STATUS       PORTS                                     NAMES
+4a4d2299b569   python:3.9-slim   "python3"                3 hours ago   Up 
+
+
+Example a Hostname :
+
+mirn@manager:~/DokerFiles$ docker container run -d --name web-app --hostname web1 -p 8787:80 --rm nginx:latest
+cf77661a164721955ed0a7802fe6d4e7421d84321a45fa40cc4d721f2882a2ed
+amirn@manager:~/DokerFiles$ docker exec -it web-app sh
+# host  ^Hnam   ^H^H^H^H^H^H^H^H^L^C
+# D^H^Hexit
+sh: 1:exit: not found
+# exit
+amirn@manager:~/DokerFiles$ docker exec -it web-app sh hostname
+sh: 0: cannot open hostname: No such file
+amirn@manager:~/DokerFiles$ docker exec -it web-app hostname
+web1
+amirn@manager:~/DokerFiles$
+
