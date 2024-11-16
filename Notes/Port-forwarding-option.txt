@@ -1,0 +1,7 @@
+When need to publish container auto port at Clude-Clusterused it :-
+
+docker container run -d --name webapp -P httpd
+
+That P captal auto randmize port number for published IP Port.
+-------------------------------------------------------------
+
