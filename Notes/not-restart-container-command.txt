@@ -1,0 +1,15 @@
+That option to working like replica at k8s deplyment <<<<
+That option restart auto craeted conatiner auto and can't stop
+
+#Docker run --itd --name python-app --retsart on-failure python:latest
+
+example:
+amirn@manager:~/DokerFiles$ docker container run -dit --name python-py --restart on-failure -p 5040:80 python:3.9-slim
+c8e6188f09242f8c1ca113c2bd68256b5bf1ef3a3b805de2904daf24f03e3aae
+amirn@manager:~/DokerFiles$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+c8e6188f0924   python:3.9-slim   "python3"                3 seconds ago   Up 3 seconds   0.0.0.0:5040->80/tcp, [::]:5040->80/tcp   python-py
+4a4d2299b569   python:3.9-slim   "python3"                3 hours ago     Up 3 hours                                               compassionate_sutherland
+10ea78da481f   nginx-con-1       "/docker-entrypoint.…"   2 days ago      Up 3 hours     0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   serene_galileo
+amirn@manager:~/DokerFiles$ docker ps
+
