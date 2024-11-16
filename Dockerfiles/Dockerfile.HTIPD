@@ -1,0 +1,8 @@
+# This Dokcerfile is for HTTPD custom images build:
+FROM ubuntu
+RUN apt-get update && apt-get install httpd
+COPY ./index.html /var/www/html/index.html
+EXPOSE 80
+CMD ["httpd","-D","FORGROUND"]
+
+#echo "<h1>Hello welcome to DevOps Team</h1>">> .index.html >>
