@@ -1,4 +1,15 @@
 systemctl is-enable docker
 systemctl status docker
+systemctl status docker.soucket
+systemctl status docker.servic	
 
+For more check if issue found status for discrption run:
+#journalctl -u docker.service
 
+Location of Daemon Confguration File:
+cat /etc/docker/daemon.json
+
+clean container : images and container 
+--------------------------
+#docker container prune
+#docker image prune
