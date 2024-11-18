@@ -1,0 +1,4 @@
+docker build -t nginx_server .
+ 
+  docker run -d --name python-app --hostname py-app --network my-network  -p 5000:5000 my-python-app sleep infinity
+
