@@ -1,0 +1,48 @@
+# Dockerfile for Flask
+FROM python:3.9-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies (optional, adjust based on your requirements)
+RUN apk update && apk add --no-cache gcc musl-dev libffi-dev
+
+# Copy requirements.txt and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire application code
+COPY . .
+
+# Ensure app.py has executable permissions
+RUN chmod +x app.py
+
+# Expose the port your Flask app will run on
+EXPOSE 8000
+
+# Run the Flask app
+CMD ["python3", "app.py"]
+
+
+-------------------------------------------------------------------------------------------
+#app.py
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return "Hello, Flask on Python 3.9 Alpine!"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000)
+-----------------------------------------------------------------------------------------
+#/requirements.txt
+flask
+gunicorn
+
+-----------------------------------------------------------------------------------------
+
+#sudo docker build -t my-python-app .
+#sudo docker run -d --name python-app --network my-network  -p 8000:8000  my-python-app
+
