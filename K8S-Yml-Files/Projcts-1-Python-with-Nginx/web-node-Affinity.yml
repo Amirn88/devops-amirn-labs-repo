@@ -1,0 +1,26 @@
+kubectl label node "node1-Name" color=blue
+
+
+affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+            - key: "color"
+              operator: In
+              values: ["blue"]
+
+
+
+kubectl label nodes "node2-name" color=green
+
+affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+            - key: "color"
+              operator: In
+              values: ["green"]
+              
+
