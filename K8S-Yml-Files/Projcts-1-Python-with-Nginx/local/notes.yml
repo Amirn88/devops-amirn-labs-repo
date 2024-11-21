@@ -1,0 +1,22 @@
+amirn@manager:~/K8S-Projects$ curl 192.168.49.2:30137
+Welcome to DevOps team Nginx wkubectl get all
+NAME                           READY   STATUS    RESTARTS      AGE
+pod/py-app-684774d46c-nd42f    1/1     Running   1 (64m ago)   24h
+pod/web-app-57468c7468-f9sxz   1/1     Running   3 (63m ago)   24h
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP          25h
+service/py-app       NodePort    10.102.96.205   <none>        8000:30080/TCP   24h
+service/web-nginx    NodePort    10.97.199.119   <none>        80:30137/TCP     22h
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/py-app    1/1     1            1           24h
+deployment.apps/web-app   1/1     1            1           24h
+
+NAME                                 DESIRED   CURRENT   READY   AGE
+replicaset.apps/py-app-684774d46c    1         1         1       24h
+replicaset.apps/web-app-57468c7468   1         1         1       24h
+replicaset.apps/web-app-78868689d8   0         0         0       24h
+replicaset.apps/web-app-7c8f7cc5d6   0         0         0       24h
+amirn@manager:~/K8S-Projects$
+
