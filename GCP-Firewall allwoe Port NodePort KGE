@@ -1,0 +1,15 @@
+2. Check Firewall Rules
+Ensure that the firewall allows traffic to port 31196. On GCP, you can check and update the firewall rules:
+
+bash
+Copy code
+gcloud compute firewall-rules list --filter="name:default-allow"
+If no rule allows traffic to the port, create one:
+
+bash
+Copy code
+gcloud compute firewall-rules create allow-nodeport-traffic \
+    --allow=tcp:31196 \
+    --network=default \
+    --source-ranges=0.0.0.0/0 \
+    --description="Allow traffic to NodePort service"
