@@ -13,3 +13,15 @@ gcloud compute firewall-rules create allow-nodeport-traffic \
     --network=default \
     --source-ranges=0.0.0.0/0 \
     --description="Allow traffic to NodePort service"
+
+
+You can rename your firewall rule to something valid, such as allow-kubeadm-traffic:
+
+bash
+Copy code
+
+gcloud compute firewall-rules create allow-kubeadm-traffic \
+    --allow=tcp:6443 \
+    --network=default \
+    --source-ranges=0.0.0.0/0 \
+    --description="Allow traffic to Installing kubeadm port"
