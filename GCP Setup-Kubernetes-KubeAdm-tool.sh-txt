@@ -1,0 +1,72 @@
+Script: setup-kubernetes.sh
+------------------------------------------------------------------------
+
+#!/bin/bash
+
+set -e
+
+echo "Starting Kubernetes setup using kubeadm..."
+
+# Update and install prerequisites
+echo "Installing prerequisites..."
+sudo apt-get update -y
+sudo apt-get install -y apt-transport-https curl ca-certificates gpg
+
+# Add Kubernetes repository key
+echo "Adding Kubernetes repository key..."
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+
+# Add Kubernetes repository
+echo "Adding Kubernetes repository..."
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+# Update package list and install Kubernetes tools
+echo "Installing Kubernetes tools..."
+sudo apt-get update -y
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+
+# Verify installation
+echo "Verifying installation..."
+kubeadm version
+kubectl version --client
+kubelet --version
+
+# Initialize Kubernetes control plane
+echo "Initializing Kubernetes control plane..."
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+# Configure kubectl for the current user
+echo "Configuring kubectl for the current user..."
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Deploy Calico as the network plugin
+echo "Deploying Calico network plugin..."
+kubectl apply -f https://docs.projectcalico.org/v3.25/manifests/calico.yaml
+
+# Enable kubelet
+echo "Enabling kubelet service..."
+sudo systemctl enable --now kubelet
+
+# Optional: Create firewall rules using gcloud CLI (if applicable)
+echo "Creating firewall rules for Kubernetes..."
+gcloud compute firewall-rules create allow-nodeport-traffic \
+  --allow=tcp:6443 \
+  --network=default \
+  --source-ranges=0.0.0.0/0 \
+  --description="Allow NodePort traffic"
+
+gcloud compute firewall-rules create allow-kubeadm-traffic \
+  --allow=tcp:6443 \
+  --network=default \
+  --source-ranges=0.0.0.0/0 \
+  --description="Allow traffic for kubeadm setup"
+
+# Final verification
+echo "Verifying node status..."
+kubectl get nodes
+
+echo "Kubernetes setup completed successfully!"
