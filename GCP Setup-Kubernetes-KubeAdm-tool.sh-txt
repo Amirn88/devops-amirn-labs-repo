@@ -70,3 +70,77 @@ echo "Verifying node status..."
 kubectl get nodes
 
 echo "Kubernetes setup completed successfully!"
+
+##############################################################################################################################################################
+If using Google Cloud, you can create a firewall rule:
+
+bash
+Copy code
+gcloud compute firewall-rules create allow-kubernetes \
+  --allow tcp:6443,tcp:10250,tcp:10251,tcp:10252,udp:8472 \
+  --network <network-name> \
+  --source-ranges <control-plane-and-worker-node-IP-range>
+3. Generate a Join Command
+On the control plane node, generate the token and CA certificate hash required for the worker nodes to join:
+
+bash
+Copy code
+sudo kubeadm token create --print-join-command
+The output will look like this:
+
+bash
+Copy code
+kubeadm join <control-plane-ip>:6443 --token <token> \
+    --discovery-token-ca-cert-hash sha256:<hash>
+Save this command as you'll run it on the worker node.
+
+4. Configure Networking
+If the control plane and worker node are in different VPCs:
+
+Peering: Set up VPC network peering between the two VPCs. Ensure the peering allows traffic over the required ports.
+Routing: Configure appropriate routes if subnets are non-overlapping.
+5. Join Worker Node
+On the worker node, run the kubeadm join command generated earlier:
+
+bash
+Copy code
+sudo kubeadm join <control-plane-ip>:6443 --token <token> \
+    --discovery-token-ca-cert-hash sha256:<hash>
+If successful, you'll see output indicating the node has joined the cluster.
+
+6. Verify Cluster Status
+On the control plane node, confirm the worker node has joined the cluster:
+
+bash
+Copy code
+kubectl get nodes
+You should see the worker node listed as Ready after a few moments.
+
+7. Install Networking Plugin
+If you haven't already deployed a networking plugin (e.g., Calico, Flannel):
+
+Apply it to the cluster from the control plane:
+
+bash
+Copy code
+kubectl apply -f https://docs.projectcalico.org/v3.25/manifests/calico.yaml
+Verify that pods can communicate across nodes:
+
+bash
+Copy code
+kubectl get pods --all-namespaces -o wide
+Notes
+Ensure that the kubelet service is enabled and running on both control plane and worker nodes:
+
+bash
+Copy code
+sudo systemctl enable kubelet && sudo systemctl start kubelet
+If the worker node fails to join, review the logs on the worker node:
+
+bash
+Copy code
+sudo journalctl -xeu kubelet
+Let me know if you need help debugging or additional details!
+
+
+
