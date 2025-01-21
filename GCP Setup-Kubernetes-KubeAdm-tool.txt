@@ -1,3 +1,151 @@
+Kubernetes Installation Steps using Kubeadm
+
+History of Commands Used:
+
+1. Set Hostname
+
+hostname
+hostnamectl set-hostname master-node
+logout
+
+2. Update and Install Dependencies
+
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+3. Add Kubernetes Repository
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+
+4. Install Kubernetes Components
+
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+kubeadm version
+
+5. Update and Install Container Runtime
+
+sudo apt update
+sudo apt upgrade
+sudo apt install containerd
+
+6. Configure Containerd
+
+sudo mkdir /etc/containerd
+containerd config default | sed 's/SystemdCgroup = false/SystemdCgroup = true/' | sudo tee /etc/containerd/config.toml
+sudo systemctl restart containerd
+
+7. Verify Configuration
+
+ps -p 1
+cat /etc/containerd/config.toml | grep -i SystemdCgroup -B 50
+
+8. Initialize Kubernetes Master Node
+
+sudo kubeadm init --apiserver-advertise-address=10.128.15.197 --pod-network-cidr=10.244.0.0/16 --upload-certs --v=5
+
+9. Enable IP Forwarding
+
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo nano /etc/sysctl.conf
+# Add: net.ipv4.ip_forward=1
+sudo sysctl -p
+cat /proc/sys/net/ipv4/ip_forward
+
+10. Retry Initialization (if required)
+
+sudo kubeadm init --apiserver-advertise-address=10.128.15.197 --pod-network-cidr=10.244.0.0/16 --upload-certs --v=5
+sudo cat /etc/kubernetes/admin.conf
+
+11. Configure kubectl for the Master Node
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+12. Install Pod Network (Calico)
+
+kubectl apply -f https://docs.projectcalico.org/v3.25/manifests/calico.yaml
+
+13. Verify the Installation
+
+kubectl get nodes
+kubectl get pods -n kube-system
+
+Notes:
+
+Ensure the container runtime (containerd) is correctly configured with SystemdCgroup = true.
+
+IP forwarding must be enabled before initializing the Kubernetes cluster.
+
+Always verify the status of the cluster using kubectl get nodes and kubectl get pods -n kube-system.
+
+Troubleshooting:
+
+If any port-related errors occur, ensure the required ports (6443, 10250, etc.) are not blocked by firewalls.
+
+For IP forwarding issues, check /proc/sys/net/ipv4/ip_forward and update /etc/sysctl.conf accordingly.
+
+
+
+
+
+###################################################################################################################################################################
+Install Kubeadm history into GCP Compute Instaces:-
+-------------------------------------------------------
+history 
+    1  hostname
+    2  hostnamectl set-hostme master-node
+    3  hostnamectl set-hostname master-node
+    4  sudo hostnamectl set-hostname master-node
+    5  logout
+    6  sudo apt-get update
+    7  sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+    8  curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    9  echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+   10  sudo apt-get update
+   11  sudo apt-get install -y kubelet kubeadm kubectl
+   12  sudo apt-mark hold kubelet kubeadm kubectl
+   13  kubeadm version
+   14  sudp apt update
+   15  sudo apt update
+   16  sudo apt upgrade 
+   17  sudo apt install containerd
+   18  sudo systemctl restart networkd-dispatcher.service
+   19  sudo systemctl restart unattended-upgrades.service
+   20  ps -p 1
+   21  cat /etc/containerd/config.toml
+   22  ps -p 1
+   23  sudo makdir /etc/containerd
+   24* sudo mkdir /etc/containerd
+   25  containerd config default
+   26  containerd config default | sed 's/SystemdCgroup = false/SystemdCgroup =true' | sudo tee /etc/containerd/config.toml
+   27  containerd config default | sed 's/SystemdCgroup = false/SystemdCgroup = true/' | sudo tee /etc/containerd/config.toml
+   28  cat /etc/containerd/config.toml | grep -i SystemdCgroup -B 50
+   29  sudo systemctl restart containerd
+   30  ip add sho
+   31  kubeadm init --apiserver-advertise-address=10.128.15.197 --pod-network-cidr=10.244.0.0/16 --upload-certs
+   32  sudo kubeadm init --apiserver-advertise-address=10.128.15.197 --pod-network-cidr=10.244.0.0/16 --upload-certs
+   33  sudo kubeadm init --apiserver-advertise-address=10.128.15.197 --pod-network-cidr=10.244.0.0/16 --upload-certs --v=5
+   34  sudo sysctl -w net.ipv4.ip_forward=1
+   35  sudo nano /etc/sysctl.conf
+   36  sudo sysctl -p
+   37  cat /proc/sys/net/ipv4/ip_forward
+   38  sudo kubeadm init --apiserver-advertise-address=10.128.15.197 --pod-network-cidr=10.244.0.0/16 --upload-certs --v=5
+   39  sudo  cat /etc/kubernetes/admin.conf 
+   40  mkdir -p $HOME/.kube
+   41  kubectl get node
+   42  kubectl apply -f https://docs.projectcalico.org/v3.25/manifests/calico.yaml
+   43  kubectl get pods -n kube-system
+   44  kubectl get nodes
+   45  kubectl get pods -n kube-system
+   46  kubectl get nodes
+
+
+###################################################################################################################################################################
+
 Script step but prefer install line by line good: setup-kubernetes.sh
 ------------------------------------------------------------------------
 
@@ -73,7 +221,7 @@ echo "Kubernetes setup completed successfully!"
 
 ##############################################################################################################################################################
 If using Google Cloud, you can create a firewall rule:
-
+######################################################
 bash
 Copy code
 gcloud compute firewall-rules create allow-kubernetes \
@@ -204,5 +352,98 @@ gcloud compute firewall-rules create allow-kubeadm-traffic \
     --network=default \
     --source-ranges=0.0.0.0/0 \
     --description="Allow traffic to Installing kubeadm port"
+-------------------------------------------------------------------------------------
+
+#install Cgroup -containerd:-
+----------------------------------------
+
+containerd config default | sed 's/SystemdCgroup = false/SystemdCgroup = true/' | sudo tee /etc/containerd/config.toml
+
+cat /etc/containerd/config.toml | grep -i SystemdCgroup -B 50
+
+sudo systemctl restart containerd
+
+
+#run this into Master Node only :-
+----------------------------------------
+
+sudo kubeadm init --apiserver-advertise-address=10.128.15.197 --pod-network-cidr=10.244.0.0/16 --upload-certs --v=5
+
+Output like that :-
+------------------------
+To start using your cluster, you need to run the following as a regular user:
+-----------------------------------------------------------------------------
+  
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+#Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 10.128.15.197:6443 --token rs50tr.sf7ccez5ng1v4f0m \
+        --discovery-token-ca-cert-hash sha256:ab2a7ac4190f90b0ec1b6cb81180a3a48fe15e0769652afb6a99f2f997f
+
+
+
+Verfing cert:-
+sudo  cat /etc/kubernetes/admin.conf 
+
+Applying Calico:-
+---------------------
+Applying Calico
+Run:
+
+bash
+Copy
+Edit
+kubectl apply -f https://docs.projectcalico.org/v3.25/manifests/calico.yaml
+Verify Calico Installation
+Check if all Calico pods are running:
+
+bash
+Copy
+Edit
+kubectl get pods -n kube-system
+Look for pods like calico-kube-controllers and calico-node. Ensure their status is Running.
+
+Check node status:
+
+bash
+Copy
+Edit
+kubectl get nodes
+Nodes should show Ready status.
+
+Troubleshooting
+If Calico pods are not running, inspect the logs:
+
+bash
+Copy
+Edit
+kubectl logs -n kube-system <pod-name>
+Ensure cgroupDriver matches between kubelet and containerd:
+
+bash
+Copy
+Edit
+cat /etc/containerd/config.toml | grep SystemdCgroup
+If mismatched, adjust as needed:
+
+bash
+Copy
+Edit
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+sudo systemctl restart containerd kubelet
+
+
 
 
