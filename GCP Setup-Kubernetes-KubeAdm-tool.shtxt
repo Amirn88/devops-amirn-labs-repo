@@ -5,7 +5,7 @@ Script step but prefer install line by line good: setup-kubernetes.sh
 
 set -e
 
-echo "Starting Kubernetes setup using kubeadm..."
+echo "Starting Kubernetes setup using kubeadm.."
 
 # Update and install prerequisites
 echo "Installing prerequisites..."
