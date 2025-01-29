@@ -1,0 +1,49 @@
+Check PV Capacity
+Run the following command to see the total capacity of each PV:
+
+sh
+Copy
+Edit
+kubectl get pv
+This will show an output like:
+
+objectivec
+Copy
+Edit
+NAME        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  STORAGECLASS   AGE
+pv0001      10Gi       RWO            Retain           Bound    default/my-pvc        standard       10d
+pv0002      20Gi       RWO            Delete           Available                      premium        5d
+2. Check PVC Usage (Bound Volumes)
+If the PV is bound to a Persistent Volume Claim (PVC), check the used storage by describing the PVC:
+
+sh
+Copy
+Edit
+kubectl describe pvc <pvc-name> -n <namespace>
+Example output:
+
+vbnet
+Copy
+Edit
+Name:          my-pvc
+Namespace:     default
+StorageClass:  standard
+Status:        Bound
+Volume:        pv0001
+Capacity:      10Gi
+Used:          4.5Gi
+Here, "Used" storage is 4.5Gi out of 10Gi.
+3. Check Storage Usage Inside a Pod
+If you want to see actual usage inside a pod that mounts the PV, run:
+
+sh
+Copy
+Edit
+kubectl exec -it <pod-name> -- df -h /path/to/mount
+Example:
+
+bash
+Copy
+Edit
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1       10G   4.5G  5.5G  45% /data
